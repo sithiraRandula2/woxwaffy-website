@@ -217,7 +217,7 @@ export const HomePage: React.FC<{
         </div>
       </section>
 
-      <section className="py-16 sm:py-20 lg:py-0 lg:min-h-[70vh] bg-[#fffaf2] flex items-center justify-center text-center grain">
+      <section className="pt-16 pb-6 sm:pt-20 sm:pb-8 lg:pt-24 lg:pb-10 bg-[#fffaf2] text-center grain">
         <motion.div
           className="page-shell"
           initial={false}
@@ -230,11 +230,10 @@ export const HomePage: React.FC<{
             A growing collection of chocolate-spread ideas, presented as
             concepts until every product detail is confirmed.
           </p>
-          <MoveDown className="mx-auto mt-10 text-[#df3038]" />
         </motion.div>
       </section>
 
-      <section className="py-12 sm:py-16 lg:py-28 bg-[#fffaf2]">
+      <section className="pt-6 pb-12 sm:pt-8 sm:pb-16 lg:pt-10 lg:pb-28 bg-[#fffaf2]">
         <div className="page-shell">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 lg:mb-14">
             <div>
