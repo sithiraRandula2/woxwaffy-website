@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axe from 'axe-core';
 import App from '../src/App';
@@ -85,6 +85,41 @@ describe('Site accessibility', () => {
 });
 
 describe('Recipe and contact keyboard journeys', () => {
+  it('restores a recipe from a shared URL after mounting', async () => {
+    history.replaceState(null, '', '/recipes/?recipe=woxwaffy-shake-classic');
+    const view = render(<App/>);
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Classic Woxwaffy Shake');
+    view.unmount();
+    render(<App/>);
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Classic Woxwaffy Shake');
+  });
+  it('returns to the gallery with Back and restores the recipe with Forward', async () => {
+    const user = userEvent.setup();
+    history.replaceState(null, '', '/recipes/');
+    render(<App/>);
+    const card = screen.getAllByRole('button').find(button => button.hasAttribute('data-recipe-id'))!;
+    const id = card.getAttribute('data-recipe-id');
+    await user.click(card);
+    expect(new URLSearchParams(location.search).get('recipe')).toBe(id);
+    history.back();
+    await waitFor(() => expect(screen.queryByRole('button', { name: 'All recipes' })).toBeNull());
+    expect(location.search).toBe('');
+    history.forward();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'All recipes' })).toBeTruthy());
+    expect(new URLSearchParams(location.search).get('recipe')).toBe(id);
+  });
+  it('shows the gallery for an unknown recipe and clears selection when navigating away', async () => {
+    const user = userEvent.setup();
+    history.replaceState(null, '', '/recipes/?recipe=unknown');
+    render(<App/>);
+    expect(screen.queryByRole('button', { name: 'All recipes' })).toBeNull();
+    await user.click(screen.getAllByRole('button').find(button => button.hasAttribute('data-recipe-id'))!);
+    await user.click(screen.getAllByRole('link', { name: 'Shop' })[0]);
+    await user.click(screen.getAllByRole('link', { name: 'Recipes' })[0]);
+    expect(location.pathname + location.search).toBe('/recipes/');
+    expect(screen.queryByRole('button', { name: 'All recipes' })).toBeNull();
+  });
+
   it('opens a recipe with Enter, focuses the title, and returns to its card', async () => {
     const user = userEvent.setup(); history.replaceState(null, '', '/recipes/'); render(<App/>);
     const recipe = screen.getAllByRole('button').find(button => button.hasAttribute('data-recipe-id'))!;
@@ -100,7 +135,7 @@ describe('Recipe and contact keyboard journeys', () => {
     const user = userEvent.setup(); history.replaceState(null, '', '/contact/'); render(<App/>);
     const name = screen.getByRole('textbox', { name: 'Name' }); name.focus();
     await user.keyboard('Keyboard visitor'); await user.tab();
-    expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Email or phone' }));
+    expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Email or phone (optional)' }));
     await user.keyboard('visitor@example.com'); await user.tab();
     expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Message' }));
     await user.keyboard('Please tell me about your products.'); await user.tab(); await user.keyboard('{Enter}');
@@ -131,7 +166,7 @@ describe('WhatsApp enquiry validation and encoding', () => {
     const open = vi.spyOn(window, 'open').mockReturnValue(null);
     const user = userEvent.setup(); history.replaceState(null, '', '/contact/'); render(<App/>);
     await user.type(screen.getByRole('textbox', { name: 'Name' }), 'N & S');
-    await user.type(screen.getByRole('textbox', { name: 'Email or phone' }), 'hello+retail@example.com');
+    await user.type(screen.getByRole('textbox', { name: 'Email or phone (optional)' }), 'hello+retail@example.com');
     await user.type(screen.getByRole('textbox', { name: 'Message' }), 'Price for 2 jars? & delivery #1\nThank you!');
     await user.click(screen.getByRole('button', { name: 'Continue in WhatsApp' }));
     const draft = new URL(String(open.mock.calls[0][0]));

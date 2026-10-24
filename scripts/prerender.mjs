@@ -24,11 +24,11 @@ for (const page of PAGE_IDS) {
     ${siteUrl ? `<link rel="canonical" href="${escape(url)}" />
     <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Woxwaffy', url: siteUrl + '/' }).replaceAll('<', '\u003c')}</script>
     <meta property="og:url" content="${escape(url)}" />
-    <meta property="og:image" content="${escape(siteUrl)}/social-preview.png" />
+    <meta property="og:image" content="${escape(siteUrl)}/social-preview.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Woxwaffy chocolate spread — spread happiness" />
-    <meta name="twitter:image" content="${escape(siteUrl)}/social-preview.png" />
+    <meta name="twitter:image" content="${escape(siteUrl)}/social-preview.jpg" />
     <meta name="twitter:image:alt" content="Woxwaffy chocolate spread — spread happiness" />` : ''}`;
   const html = template.replace(/<title>.*?<\/title>/s, `<title>${escape(title)}</title>`)
     .replace('</head>', `${tags}\n  </head>`)

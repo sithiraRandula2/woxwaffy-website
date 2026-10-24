@@ -25,7 +25,7 @@ for (const page of pages) {
     origin = new URL(canonical).origin;
     assert.equal(new URL(canonical).pathname, page === 'home' ? '/' : `/${page}/`);
     assert.equal(document.querySelector('meta[property="og:url"]').content, canonical);
-    assert.equal(document.querySelector('meta[property="og:image"]').content, `${origin}/social-preview.png`);
+    assert.equal(document.querySelector('meta[property="og:image"]').content, `${origin}/social-preview.jpg`);
     assert.equal(document.querySelector('meta[name="robots"]').content, 'index,follow');
     assert.equal(JSON.parse(document.querySelector('script[type="application/ld+json"]').textContent)['@type'], 'WebSite');
   } else {
@@ -38,5 +38,5 @@ if (origin) {
   const sitemap = await readFile('dist/sitemap.xml', 'utf8');
   for (const page of pages) assert.ok(sitemap.includes(origin + (page === 'home' ? '/' : `/${page}/`)));
 } else assert.ok(robots.includes('Disallow: /'));
-await access('dist/social-preview.png');
+await access('dist/social-preview.jpg');
 console.log(`Verified all ${pages.length} prerendered pages, metadata, image dimensions/paths, sharing assets, and ${origin ? 'production sitemap/canonicals' : 'preview indexing restrictions'}.`);

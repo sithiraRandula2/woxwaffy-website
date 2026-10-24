@@ -5,7 +5,7 @@ import { WhatsAppIcon } from "../components/WhatsAppIcon";
 
 export const ContactPage: React.FC = () => {
   return (
-    <section className="py-12 sm:py-16 lg:py-28">
+    <section className="pt-6 pb-12 sm:pt-8 sm:pb-16 lg:pt-10 lg:pb-28">
       <div className="page-shell grid lg:grid-cols-2 gap-8 lg:gap-16">
         <div>
           <p className="eyebrow">Let’s talk chocolate</p>
@@ -33,12 +33,12 @@ export const ContactPage: React.FC = () => {
               <Phone className="text-[#df3038]" />
               {BUSINESS.telephone}
             </a>
-            <p className="flex gap-3 items-center min-w-0">
+            <p className="flex min-h-11 gap-3 items-center min-w-0">
               <Mail className="text-[#df3038] shrink-0" />
               <span className="break-all">{BUSINESS.email}</span>
               {/* Confirm this email address before launch. */}
             </p>
-            <p className="flex items-start gap-3 text-[#6e4c3e]">
+            <p className="flex min-h-11 items-center gap-3 text-[#6e4c3e]">
               <MapPin className="w-5 h-5 shrink-0 text-[#df3038]" />
               <span>{BUSINESS.location}</span>
             </p>
@@ -73,7 +73,7 @@ export const ContactPage: React.FC = () => {
             const name = String(fields.get('name') ?? '').trim();
             const contact = String(fields.get('contact') ?? '').trim();
             const message = String(fields.get('message') ?? '').trim();
-            const url = whatsappUrl(`Hello Woxwaffy!\n\nName: ${name}\nEmail or phone: ${contact}\n\nMessage:\n${message}`);
+            const url = whatsappUrl(`Hello Woxwaffy!\n\nName: ${name}${contact ? `\nEmail or phone: ${contact}` : ''}\n\nMessage:\n${message}`);
             window.open(url, '_blank', 'noopener,noreferrer');
           }}
           className="liquid-glass-card rounded-[2rem] p-5 sm:p-7 lg:p-10"
@@ -90,9 +90,8 @@ export const ContactPage: React.FC = () => {
               />
             </label>
             <label className="text-sm font-bold">
-              Email or phone
+              Email or phone (optional)
               <input
-                required
                 className="mt-2 w-full rounded-xl bg-[#fffaf2] border border-[#2b140d]/12 p-4 font-normal"
                 name="contact"
                 autoComplete="off"

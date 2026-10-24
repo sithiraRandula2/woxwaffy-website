@@ -1,12 +1,13 @@
 import { imageProps } from '../utils/imageProps';
+import { ToastReveal } from '../components/ToastReveal';
 import React, { useRef } from "react";
 import { ArrowRight, MoveDown, Play, Sparkles } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { PRODUCTS, Product } from "../data/products";
 import { RECIPES, Recipe } from "../data/recipes";
 import { PageId } from "../components/Navbar";
-import plainToast from "../../assets/deliciously-spread-toasted-bread-isolated-on-transparent-background-free.webp";
-import chocolateToast from "../../assets/deliciously-spread-chocolate-hazelnut-spread-with-chopped-nuts-on-toasted-bread-isolated-on-transparent-background-free-png.webp";
+import plainToast from "../../assets/story-plain-bread.webp";
+import chocolateToast from "../../assets/story-chocolate-bread.webp";
 import toastJarFusion from "../../assets/Waffy Chocolate Peanut Toast-Jar Fusion.webp";
 
 export const HomePage: React.FC<{
@@ -88,8 +89,8 @@ export const HomePage: React.FC<{
             transition={{ duration: 1, delay: 0.15 }}
             className="lg:col-span-5 relative min-h-[340px] sm:min-h-[430px] lg:min-h-[460px] flex items-center justify-center"
           >
-            <div className="absolute w-[86%] aspect-square rounded-full bg-[#f2d69f]" />
-            <div className="absolute w-[68%] aspect-square rounded-full border border-white/80" />
+            <div className="absolute w-[86%] sm:max-lg:max-w-[400px] aspect-square rounded-full bg-[#f2d69f]" />
+            <div className="absolute w-[68%] sm:max-lg:max-w-[316px] aspect-square rounded-full border border-white/80" />
             <img
               src="/assets/woxwaffy-chocolate-spread-jar.webp"
               {...imageProps('/assets/woxwaffy-chocolate-spread-jar.webp', '(min-width: 1024px) 360px, (min-width: 640px) 300px, 255px')}
@@ -127,7 +128,8 @@ export const HomePage: React.FC<{
         className="relative bg-[#2b140d] text-[#fffaf2] grain"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_40%,#713a22_0%,#2b140d_56%)]" />
-        <div className="page-shell relative grid lg:grid-cols-2">
+        <ToastReveal reducedMotion={reducedMotion}/>
+        <div className="page-shell relative hidden lg:grid lg:grid-cols-2">
           <div className="relative z-20">
             {[
               [
@@ -164,7 +166,7 @@ export const HomePage: React.FC<{
                 </>,
                 "Spread it on something warm, drizzle it over a favourite, or make up a ritual entirely your own.",
               ],
-            ].map(([label, title, copy], index) => (
+            ].map(([label, title, copy]) => (
               <motion.div
                 key={label as string}
                 initial={false}
@@ -178,15 +180,7 @@ export const HomePage: React.FC<{
                 </p>
                 <h2 className="section-title mt-6">{title}</h2>
                 <p className="text-white/65 max-w-md mt-6 leading-7">{copy}</p>
-                <div className="mt-8 flex justify-center rounded-3xl bg-white/5 p-4 lg:hidden">
-                  <img
-                    loading="lazy"
-                    src={index === 0 ? plainToast : index === 1 ? chocolateToast : toastJarFusion}
-                    {...imageProps(index === 0 ? plainToast : index === 1 ? chocolateToast : toastJarFusion, '(min-width: 640px) 448px, calc(100vw - 64px)')}
-                    alt={index === 0 ? "Plain toasted bread before adding chocolate spread" : index === 1 ? "Toast covered with chocolate spread and chopped nuts" : "Waffy chocolate peanut toast and jar fusion"}
-                    className="h-64 sm:h-80 w-full max-w-md object-contain drop-shadow-xl"
-                  />
-                </div>
+
               </motion.div>
             ))}
           </div>
@@ -206,7 +200,7 @@ export const HomePage: React.FC<{
                   src={plainToast}
                   loading="lazy"
                   {...imageProps(plainToast, '(min-width: 1280px) 620px, 50vw')}
-                  alt="Plain toasted bread before adding chocolate spread"
+                  alt="Stack of plain bread slices before adding chocolate spread"
                   className="absolute inset-0 h-full w-full object-contain mix-blend-screen drop-shadow-[0_35px_50px_rgba(0,0,0,.5)]"
                 />
                 <motion.img
@@ -214,7 +208,7 @@ export const HomePage: React.FC<{
                   src={chocolateToast}
                   loading="lazy"
                   {...imageProps(chocolateToast, '(min-width: 1280px) 620px, 50vw')}
-                  alt="Toast covered with chocolate spread and chopped nuts"
+                  alt="Stack of bread slices covered with chocolate spread"
                   className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_35px_50px_rgba(0,0,0,.5)]"
                 />
               </motion.div>

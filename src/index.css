@@ -82,3 +82,28 @@
   .jar-drift, .fusion-drift, .animate-bounce { animation: none !important; }
 }
 
+
+/* A single, one-time wipe replaces scroll-driven image changes on touch layouts. */
+.toast-reveal-wipe, .toast-reveal-plain, .toast-reveal-caption { opacity: 0; }
+.toast-reveal-finished, .toast-reveal-caption-3 { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) and (width < 64rem) {
+  .toast-reveal-animated .toast-reveal-plain,
+  .toast-reveal-animated .toast-reveal-caption-1 { opacity: 1; }
+  .toast-reveal-animated .toast-reveal-finished { clip-path: inset(0 100% 0 0); }
+  .toast-reveal-animated .toast-reveal-caption-3 { opacity: 0; }
+  .toast-reveal-playing.toast-reveal-animated .toast-reveal-finished { animation: toast-spread-reveal 2s .9s cubic-bezier(.4,0,.2,1) both; }
+  .toast-reveal-playing.toast-reveal-animated .toast-reveal-wipe { animation: toast-spread-wipe 2s .9s cubic-bezier(.4,0,.2,1) both; }
+  .toast-reveal-playing.toast-reveal-animated .toast-reveal-caption-1 { animation: toast-caption-out .35s 1.1s both; }
+  .toast-reveal-playing.toast-reveal-animated .toast-reveal-caption-2 { animation: toast-caption-middle 2.2s 1.35s both; }
+  .toast-reveal-playing.toast-reveal-animated .toast-reveal-caption-3 { animation: toast-caption-in .6s 3.55s both; }
+}
+@keyframes toast-spread-reveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes toast-spread-wipe {
+  0% { transform: translateX(-100%) skewX(-12deg); opacity: 0; }
+  12% { opacity: .9; }
+  85% { opacity: .9; }
+  100% { transform: translateX(520%) skewX(-12deg); opacity: 0; }
+}
+@keyframes toast-caption-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes toast-caption-middle { 0%,100% { opacity: 0; } 20%,80% { opacity: 1; } }
+@keyframes toast-caption-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }

@@ -40,7 +40,7 @@ Open http://localhost:3000. The current website does not require a Gemini API ke
 | `npm run test:seo` | Check generated page metadata, image paths/dimensions, sitemap and canonical URLs |
 | `npm run preview` | Serve the production build locally |
 | `npm run lint` | Run TypeScript checks without emitting files |
-| `npm run clean` | Remove `dist/` and `server.js` |
+| `npm run clean` | Remove `dist/`, `.prerender/`, and `artifacts/` |
 
 ## Project structure
 
@@ -88,15 +88,15 @@ Accessibility changes and the remaining manual browser pass are documented in [d
 
 ## Image assets
 
-The React site serves WebP images at quality 88, preserving transparency. Full-resolution images retain their original dimensions; responsive versions are generated at 320, 640, 960, 1280, and 1600 pixels wide where smaller than the original (never upscaled). Original PNGs remain as editable sources. Unused original artwork is preserved in `assets/`, including `assets/originals/`; it is not copied to the deployed site unless imported by the app.
+The React site serves WebP images at quality 88, preserving transparency. Full-resolution images retain their original dimensions; responsive versions are generated at 320, 640, 960, 1280, and 1600 pixels wide where smaller than the original (never upscaled). Full-size WebP files are kept as the image sources. PNG copies have been removed; unique unused artwork has been preserved as WebP under `assets/`, including `assets/originals/`. The social preview is generated as JPEG for sharing compatibility.
 
-To regenerate the WebP files after replacing a source PNG:
+To regenerate responsive variants and metadata after replacing a full-size WebP source:
 
 ```bash
 python3 -m pip install Pillow
 python3 scripts/convert-images.py
 ```
 
-The converter checks full-resolution output dimensions and exact preservation of the alpha channel. It also regenerates `src/data/image-manifest.ts`, used by `src/utils/imageProps.ts` to supply `srcset`, layout-specific `sizes`, and intrinsic dimensions. The homepage hero loads eagerly with high fetch priority; below-the-fold images load lazily.
+The generator leaves full-size WebP sources unchanged and creates missing or outdated responsive variants, preserving transparency and checking their dimensions. It also regenerates `src/data/image-manifest.ts`, used by `src/utils/imageProps.ts` to supply `srcset`, layout-specific `sizes`, and intrinsic dimensions. The homepage hero loads eagerly with high fetch priority; below-the-fold images load lazily.
 
 To validate performance, run mobile Lighthouse against the same deployed preview URL before and after the change, using the same settings and comparing the median of three runs. Check LCP, CLS, image transfer sizes, and image sharpness on a high-density phone as well as desktop. Local builds alone do not establish a deployed Lighthouse improvement.

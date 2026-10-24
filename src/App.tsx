@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { MotionConfig, useReducedMotion } from 'motion/react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { MotionConfig } from 'motion/react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ProductModal } from './components/ProductModal';
 import { Seo } from './components/Seo';
 import { Product } from './data/products';
-import { Recipe } from './data/recipes';
+import { RECIPES, Recipe } from './data/recipes';
 import { pageFromLocation, pagePath, type PageId } from './data/site';
 import { HomePage } from './pages/HomePage';
 import { ProductsPage } from './pages/ProductsPage';
@@ -19,18 +19,22 @@ export default function App({ initialPage = 'home' }: { initialPage?: PageId }) 
   const [product, setProduct] = useState<Product | null>(null);
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const mainRef = useRef<HTMLElement>(null);
-  const reducedMotion = useReducedMotion();
+  const scrollAfterNavigation = useRef(false);
   const focusAfterNavigation = useRef(false);
   useEffect(() => {
     const sync = () => {
       focusAfterNavigation.current = true;
-      setPage(pageFromLocation(location.pathname, location.hash));
+      const nextPage = pageFromLocation(location.pathname, location.hash);
+      setPage(nextPage);
+      setRecipe(nextPage === 'recipes' ? RECIPES.find(item => item.id === new URLSearchParams(location.search).get('recipe')) ?? null : null);
       setProduct(null);
     };
     // Preserve existing shared hash links while moving to crawlable page paths.
     if (location.hash && ['home', 'products', 'about', 'recipes', 'contact', 'privacy'].includes(location.hash.slice(1))) {
       history.replaceState(null, '', pagePath(page));
     }
+    // Read query state after hydration so it matches the prerendered gallery.
+    setRecipe(page === 'recipes' ? RECIPES.find(item => item.id === new URLSearchParams(location.search).get('recipe')) ?? null : null);
     addEventListener('popstate', sync);
     addEventListener('hashchange', sync);
     return () => { removeEventListener('popstate', sync); removeEventListener('hashchange', sync); };
@@ -40,25 +44,46 @@ export default function App({ initialPage = 'home' }: { initialPage?: PageId }) 
       mainRef.current?.focus({ preventScroll: true });
       focusAfterNavigation.current = false;
     }
-  }, [page]);
+  }, [page, recipe]);
+  useLayoutEffect(() => {
+    if (scrollAfterNavigation.current) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      scrollAfterNavigation.current = false;
+    }
+  }, [page, recipe]);
   const navigate = (next: PageId) => {
-    if (next === page) mainRef.current?.focus({ preventScroll: true });
+    scrollAfterNavigation.current = next !== page || recipe !== null;
+    setRecipe(null);
+    if (next === page) {
+      if (location.search) history.pushState(null, '', pagePath(next));
+      mainRef.current?.focus({ preventScroll: true });
+    }
     else {
       focusAfterNavigation.current = true;
       history.pushState(null, '', pagePath(next));
       setPage(next);
     }
-    window.scrollTo({ top: 0, behavior: reducedMotion ? 'instant' : 'smooth' });
+    if (!scrollAfterNavigation.current) window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+  const selectRecipe = (next: Recipe | null) => {
+    const url = pagePath('recipes') + (next ? `?recipe=${encodeURIComponent(next.id)}` : '');
+    if (location.pathname + location.search !== url) history.pushState(null, '', url);
+    if (page !== 'recipes') {
+      focusAfterNavigation.current = true;
+      scrollAfterNavigation.current = true;
+    }
+    setPage('recipes');
+    setRecipe(next);
   };
   return <MotionConfig reducedMotion="user"><div className="min-h-screen bg-[#fffaf2] text-[#2b140d]">
     <Seo page={page}/>
     <a className="skip-link" href="#main-content">Skip to content</a>
     <Navbar currentPage={page} onNavigate={navigate}/>
     <main id="main-content" ref={mainRef} tabIndex={-1}>
-      {page === 'home' && <HomePage onNavigate={navigate} onSelectProduct={setProduct} onSelectRecipe={r => { setRecipe(r); navigate('recipes'); }}/>}
+      {page === 'home' && <HomePage onNavigate={navigate} onSelectProduct={setProduct} onSelectRecipe={selectRecipe}/>}
       {page === 'products' && <ProductsPage onSelectProduct={setProduct}/>}
       {page === 'about' && <AboutPage onNavigate={navigate}/>}
-      {page === 'recipes' && <RecipesPage selectedRecipe={recipe} onSelectRecipe={setRecipe}/>}
+      {page === 'recipes' && <RecipesPage selectedRecipe={recipe} onSelectRecipe={selectRecipe}/>}
       {page === 'contact' && <ContactPage/>}
       {page === 'privacy' && <PrivacyPage onNavigate={navigate}/>}
     </main>

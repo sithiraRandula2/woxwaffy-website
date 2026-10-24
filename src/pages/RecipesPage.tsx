@@ -1,12 +1,12 @@
 import { imageProps } from '../utils/imageProps';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { ArrowLeft, Clock } from "lucide-react";
 import { RECIPES, Recipe } from "../data/recipes";
 export const RecipesPage: React.FC<{
   selectedRecipe: Recipe | null;
   onSelectRecipe: (r: Recipe | null) => void;
 }> = ({ selectedRecipe, onSelectRecipe }) => {
-  const [active, setActive] = useState<Recipe | null>(selectedRecipe);
+  const active = selectedRecipe;
   const titleRef = useRef<HTMLHeadingElement>(null);
   const lastRecipeId = useRef<string | null>(null);
   const focusAfterChange = useRef(false);
@@ -19,7 +19,6 @@ export const RecipesPage: React.FC<{
   const choose = (r: Recipe | null) => {
     if (r) lastRecipeId.current = r.id;
     focusAfterChange.current = true;
-    setActive(r);
     onSelectRecipe(r);
   };
   if (active)
