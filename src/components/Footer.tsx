@@ -7,7 +7,7 @@ import { pagePath } from '../data/site';
 import { navigateLink } from '../utils/navigation';
 import { BUSINESS, whatsappUrl } from '../data/business';
 
-export const Footer: React.FC<{onNavigate:(p:PageId)=>void}> = ({onNavigate}) => <footer className="bg-[#2b140d] text-[#fffaf2] pt-8 pb-5"><div className="page-shell">
+export const Footer: React.FC<{onNavigate:(p:PageId)=>void}> = ({onNavigate}) => <footer className="bg-[#2b140d] text-[#fffaf2] pt-8 pb-[calc(6rem+env(safe-area-inset-bottom))]"><div className="page-shell">
   <div className="grid sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:grid-cols-[minmax(0,320px)_auto_minmax(0,480px)] lg:justify-between gap-6 pb-6 lg:gap-10">
     <div className="min-w-0 sm:col-span-2 lg:col-span-1"><WoxwaffyLogo size="lg"/><p className="text-white/75 max-w-xl lg:max-w-[320px] mt-4 text-sm leading-6">A joyful Sri Lankan chocolate spread brand in development. Final product and business information will be published after verification.</p></div>
     <nav aria-label="Footer navigation"><p className="text-xs uppercase tracking-widest text-[#e8b777] mb-3">Explore</p><div className="flex flex-wrap gap-x-5 gap-y-1 sm:block">{(['home','products','about','recipes','contact'] as PageId[]).map(p=><a key={p} href={pagePath(p)} onClick={event => navigateLink(event, () => onNavigate(p))} className="capitalize text-white/70 hover:text-white text-sm min-h-11 inline-flex items-center sm:flex sm:min-h-11">{p}</a>)}</div></nav>

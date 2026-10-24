@@ -2,6 +2,8 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { MotionConfig } from 'motion/react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { WhatsAppIcon } from './components/WhatsAppIcon';
+import { whatsappUrl } from './data/business';
 import { ProductModal } from './components/ProductModal';
 import { Seo } from './components/Seo';
 import { Product } from './data/products';
@@ -89,5 +91,8 @@ export default function App({ initialPage = 'home' }: { initialPage?: PageId }) 
     </main>
     <ProductModal product={product} onClose={() => setProduct(null)} onInquire={() => { setProduct(null); navigate('contact'); }}/>
     <Footer onNavigate={navigate}/>
+    <a href={whatsappUrl("Hi, I'm interested in WoxWaffy Chocolate Spread.")} target="_blank" rel="noopener noreferrer" aria-label="Chat with Woxwaffy on WhatsApp" title="WhatsApp" className="liquid-glass-green z-40 inline-flex h-14 w-14 items-center justify-center rounded-full text-white transition-transform hover:-translate-y-1 motion-reduce:transition-none" style={{ position: 'fixed', right: 'max(1.25rem, env(safe-area-inset-right))', bottom: 'max(1.25rem, env(safe-area-inset-bottom))' }}>
+      <WhatsAppIcon className="h-7 w-7"/>
+    </a>
   </div></MotionConfig>;
 }

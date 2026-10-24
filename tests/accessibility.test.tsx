@@ -133,7 +133,7 @@ describe('Recipe and contact keyboard journeys', () => {
   it('opens an encoded WhatsApp draft by keyboard without adding follow-up text', async () => {
     const open = vi.spyOn(window, 'open').mockReturnValue(null);
     const user = userEvent.setup(); history.replaceState(null, '', '/contact/'); render(<App/>);
-    const name = screen.getByRole('textbox', { name: 'Name' }); name.focus();
+    const name = screen.getByRole('textbox', { name: 'Name (optional)' }); name.focus();
     await user.keyboard('Keyboard visitor'); await user.tab();
     expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Email or phone (optional)' }));
     await user.keyboard('visitor@example.com'); await user.tab();
@@ -147,7 +147,7 @@ describe('Recipe and contact keyboard journeys', () => {
     expect(target).toBe('_blank'); expect(features).toBe('noopener,noreferrer');
     expect(screen.queryByRole('status')).toBeNull();
     expect(screen.queryByRole('link', { name: 'Open WhatsApp if it didn’t open' })).toBeNull();
-    expect((screen.getByRole('textbox', { name: 'Name' }) as HTMLInputElement).value).toBe('Keyboard visitor');
+    expect((screen.getByRole('textbox', { name: 'Name (optional)' }) as HTMLInputElement).value).toBe('Keyboard visitor');
     open.mockRestore();
   });
 });
@@ -165,7 +165,7 @@ describe('WhatsApp enquiry validation and encoding', () => {
   it('preserves special characters and line breaks in the draft', async () => {
     const open = vi.spyOn(window, 'open').mockReturnValue(null);
     const user = userEvent.setup(); history.replaceState(null, '', '/contact/'); render(<App/>);
-    await user.type(screen.getByRole('textbox', { name: 'Name' }), 'N & S');
+    await user.type(screen.getByRole('textbox', { name: 'Name (optional)' }), 'N & S');
     await user.type(screen.getByRole('textbox', { name: 'Email or phone (optional)' }), 'hello+retail@example.com');
     await user.type(screen.getByRole('textbox', { name: 'Message' }), 'Price for 2 jars? & delivery #1\nThank you!');
     await user.click(screen.getByRole('button', { name: 'Continue in WhatsApp' }));

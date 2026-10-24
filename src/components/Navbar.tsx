@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { pagePath } from '../data/site';
 import { navigateLink } from '../utils/navigation';
 import { WoxwaffyLogo } from './WoxwaffyLogo';
-import { WhatsAppIcon } from './WhatsAppIcon';
 
 import type { PageId } from '../data/site';
 export type { PageId } from '../data/site';
@@ -42,9 +41,9 @@ export const Navbar: React.FC<{ currentPage: PageId; onNavigate: (page: PageId) 
     <nav className="page-shell h-20 flex items-center justify-between" aria-label="Primary navigation">
       <a href="/" onClick={event => navigateLink(event, () => go('home'))} aria-label="Woxwaffy home"><WoxwaffyLogo variant="dark" size="sm" showTagline={false} /></a>
       <div className="hidden lg:flex items-center gap-8">{links.map(link => <a key={link.page} href={pagePath(link.page)} aria-current={currentPage === link.page ? 'page' : undefined} onClick={event => navigateLink(event, () => go(link.page))} className={`inline-flex items-center text-sm font-semibold hover:text-[#b72a30] ${currentPage === link.page ? 'text-[#b72a30]' : 'text-[#2b140d]/70'}`}>{link.label}</a>)}</div>
-      <div className="ml-auto flex items-center gap-2 lg:ml-0"><a href="https://wa.me/94744108853?text=Hi%2C%20I%27m%20interested%20in%20WoxWaffy%20Chocolate%20Spread." target="_blank" rel="noopener noreferrer" aria-label="Chat with Woxwaffy on WhatsApp" title="WhatsApp" className="liquid-glass-green hidden md:inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white transition hover:-translate-y-0.5"><WhatsAppIcon className="w-6 h-6"/></a>
+      <div className="ml-auto flex items-center gap-2 lg:ml-0">
       <button ref={menuButtonRef} onClick={() => setOpen(!open)} className="lg:hidden min-h-11 min-w-11 inline-flex items-center justify-center p-2 rounded-full" aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? 'Close menu' : 'Open menu'}>{open ? <X /> : <Menu />}</button></div>
     </nav>
-    <AnimatePresence>{open && <motion.div id="mobile-navigation" initial={false} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} className="lg:hidden bg-[#fffaf2] border-t border-[#2b140d]/10 px-4 py-5 shadow-xl"><div className="page-shell flex flex-col gap-1">{links.map(link => <a key={link.page} href={pagePath(link.page)} aria-current={currentPage === link.page ? 'page' : undefined} onClick={event => navigateLink(event, () => go(link.page))} className="min-h-12 text-left text-xl font-serif px-4 py-3 rounded-xl hover:bg-white">{link.label}</a>)}<a href="https://wa.me/94744108853?text=Hi%2C%20I%27m%20interested%20in%20WoxWaffy%20Chocolate%20Spread." target="_blank" rel="noopener noreferrer" className="liquid-glass-green md:hidden mt-3 min-h-12 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold text-white"><WhatsAppIcon className="w-5 h-5"/> WhatsApp <ArrowUpRight className="w-4 h-4" /></a></div></motion.div>}</AnimatePresence>
+    <AnimatePresence>{open && <motion.div id="mobile-navigation" initial={false} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} className="lg:hidden bg-[#fffaf2] border-t border-[#2b140d]/10 px-4 py-5 shadow-xl"><div className="page-shell flex flex-col gap-1">{links.map(link => <a key={link.page} href={pagePath(link.page)} aria-current={currentPage === link.page ? 'page' : undefined} onClick={event => navigateLink(event, () => go(link.page))} className="min-h-12 text-left text-xl font-serif px-4 py-3 rounded-xl hover:bg-white">{link.label}</a>)}</div></motion.div>}</AnimatePresence>
   </header>;
 };

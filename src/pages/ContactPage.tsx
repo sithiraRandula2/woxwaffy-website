@@ -73,16 +73,16 @@ export const ContactPage: React.FC = () => {
             const name = String(fields.get('name') ?? '').trim();
             const contact = String(fields.get('contact') ?? '').trim();
             const message = String(fields.get('message') ?? '').trim();
-            const url = whatsappUrl(`Hello Woxwaffy!\n\nName: ${name}${contact ? `\nEmail or phone: ${contact}` : ''}\n\nMessage:\n${message}`);
+            const details = [name && `Name: ${name}`, contact && `Email or phone: ${contact}`].filter(Boolean).join('\n');
+            const url = whatsappUrl(`Hello Woxwaffy!${details ? `\n\n${details}` : ''}\n\nMessage:\n${message}`);
             window.open(url, '_blank', 'noopener,noreferrer');
           }}
           className="liquid-glass-card rounded-[2rem] p-5 sm:p-7 lg:p-10"
         >
           <div className="grid gap-5">
             <label className="text-sm font-bold">
-              Name
+              Name (optional)
               <input
-                required
                 name="name"
                 autoComplete="name"
                 className="mt-2 w-full rounded-xl bg-[#fffaf2] border border-[#2b140d]/12 p-4 font-normal"
